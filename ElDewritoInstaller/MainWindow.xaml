@@ -1,0 +1,21 @@
+﻿<Window x:Class="ElDewritoInstaller.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ElDewritoInstaller"
+        mc:Ignorable="d"
+        Title="ElDewrito Installer" Height="349" Width="501" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <ProgressBar x:Name="progressBar" Margin="10,10,10,231" Grid.Column="1" Foreground="Green"/>
+        <TextBlock x:Name="progressBarText" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,15,14,236" Visibility="Visible" Height="70" Width="465" Text="0%" TextAlignment="Center" Grid.Column="1" FontSize="48" TextDecorations="{x:Null}" />
+        <Button Content="Download" Margin="10,100,249,116" Click="btnStartDownload_Click" IsEnabled="True" x:Name="btnStartDownload" Grid.Column="1" FontSize="32" />
+        <Button Content="Hash Check" Margin="255,100,10,116" Click="btnStartHashCheck_Click" IsEnabled="True" x:Name="btnStartHashCheck" Grid.Column="1" FontSize="32" />
+        <Button Content="Install" Margin="10,215,10,10" Click="btnStartInstall_Click" IsEnabled="True" x:Name="btnStartInstall" Grid.Column="1" FontSize="64" />
+    </Grid>
+</Window>
