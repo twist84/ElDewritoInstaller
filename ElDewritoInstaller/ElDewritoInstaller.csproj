@@ -37,6 +37,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\LOGO_Installer.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip, Version=1.9.8.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.9.8\lib\net20\Ionic.Zip.dll</HintPath>
@@ -48,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -111,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LOGO_Installer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.28.3\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.3\build\Fody.targets')" />

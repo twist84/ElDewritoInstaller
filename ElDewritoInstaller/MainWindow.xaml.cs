@@ -194,7 +194,11 @@ namespace ElDewritoInstaller
             {
                 zip.ExtractProgress +=
                     new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
-                zip.ExtractAll(dewLoc, ExtractExistingFileAction.OverwriteSilently);
+                //zip.ExtractAll(dewLoc, ExtractExistingFileAction.OverwriteSilently);
+                foreach (ZipEntry file in zip)
+                {
+                    file.Extract(dewLoc, ExtractExistingFileAction.OverwriteSilently);
+                }
             }
         }
 
