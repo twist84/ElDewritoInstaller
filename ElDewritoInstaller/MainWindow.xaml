@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ElDewritoInstaller"
         mc:Ignorable="d"
-        Title="ElDewrito Installer" Height="349" Width="501" ResizeMode="NoResize">
+        Title="ElDewrito Installer"
+        Height="349" Width="501" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>

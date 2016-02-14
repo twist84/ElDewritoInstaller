@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
@@ -19,11 +20,12 @@ namespace ElDewritoInstaller
         #region BackgroundWorkers
         private static BackgroundWorker Download;
         private static BackgroundWorker HashCheck;
-        private static BackgroundWorker Extract;
+        private static BackgroundWorker Install;
         #endregion
 
         #region Variables
         WebClient webClient = new WebClient();
+        ProcessStartInfo startProcess = new ProcessStartInfo();
         string dewLoc = Path.Combine(Directory.GetCurrentDirectory(), JSON("name"));
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), JSON("filename"));
         string fileHash = JSON("hash");
@@ -80,17 +82,17 @@ namespace ElDewritoInstaller
 
         private void btnStartInstall_Click(object sender, RoutedEventArgs e)
         {
-            Extract = new BackgroundWorker
+            Install = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
 
-            Extract.DoWork += Extract_DoWork;
-            Extract.ProgressChanged += Extract_ProgressChanged;
-            Extract.RunWorkerCompleted += Extract_RunWorkerCompleted;
+            Install.DoWork += Install_DoWork;
+            Install.ProgressChanged += Install_ProgressChanged;
+            Install.RunWorkerCompleted += Install_RunWorkerCompleted;
 
-            Extract.RunWorkerAsync(filePath);
+            Install.RunWorkerAsync(filePath);
             this.btnStartDownload.IsEnabled = false;
             this.btnStartHashCheck.IsEnabled = false;
             this.btnStartInstall.IsEnabled = false;
@@ -119,8 +121,8 @@ namespace ElDewritoInstaller
 
         private void Download_RunWorkerCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            MessageBox.Show("Download completed!");
             progressBar.Value = 0;
+            progressBarText.Text = "Download Complete";
             this.btnStartHashCheck.IsEnabled = true;
         }
         #endregion
@@ -173,36 +175,38 @@ namespace ElDewritoInstaller
         {
             if (e.Result.ToString() == fileHash)
             {
-                MessageBox.Show("Hash Check Completed Successfully!");
                 progressBar.Value = 0;
+                progressBarText.Text = "Hash Check Complete";
                 this.btnStartHashCheck.IsEnabled = false;
                 this.btnStartInstall.IsEnabled = true;
             }
             else
             {
-                MessageBox.Show("Hash Check Completed Unsuccessfully, Please Redownload!");
+                progressBar.Value = 0;
+                progressBarText.Text = "Hash Check Fail";
                 this.btnStartDownload.IsEnabled = true;
                 this.btnStartHashCheck.IsEnabled = false;
             }
         }
         #endregion
 
-        #region Extract classes
-        private void Extract_DoWork(object sender, DoWorkEventArgs e)
+        #region Install classes
+        private void Install_DoWork(object sender, DoWorkEventArgs e)
         {
             using (ZipFile zip = ZipFile.Read(filePath))
             {
                 zip.ExtractProgress +=
                     new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
-                //zip.ExtractAll(dewLoc, ExtractExistingFileAction.OverwriteSilently);
                 foreach (ZipEntry file in zip)
                 {
                     file.Extract(dewLoc, ExtractExistingFileAction.OverwriteSilently);
                 }
             }
+            Process.Start(Path.Combine(dewLoc, "tpi\\vc2012_redist\\vcredist_x86.exe"));
+            Process.Start(Path.Combine(dewLoc, "tpi\\directx\\directx_june2010.exe"));
         }
 
-        private void Extract_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void Install_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string progressPercentage = Convert.ToString(e.ProgressPercentage);
 
@@ -210,10 +214,10 @@ namespace ElDewritoInstaller
             progressBarText.Text = String.Format("{0}%", progressPercentage);
         }
 
-        private void Extract_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Install_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show("Install Completed Successfully!");
             progressBar.Value = 0;
+            progressBarText.Text = "Install Complete";
             this.btnStartDownload.IsEnabled = true;
             this.btnStartHashCheck.IsEnabled = true;
             this.btnStartInstall.IsEnabled = true;
@@ -225,7 +229,7 @@ namespace ElDewritoInstaller
         {
             System.Net.WebClient wc = new System.Net.WebClient();
             dynamic dew = JsonConvert.DeserializeObject(wc.DownloadString("http://thetwist84.github.io/HaloOnlineModManager/game/base.json"));
-
+            
             string name = dew["base"].Name;
             string version = dew["base"].Version;
             string filename = dew["base"].Filename;
@@ -268,7 +272,7 @@ namespace ElDewritoInstaller
         {
             if (e.TotalBytesToTransfer > 0)
             {
-                Extract.ReportProgress(Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer));
+                Install.ReportProgress(Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer));
             }
         }
         #endregion
